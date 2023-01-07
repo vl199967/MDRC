@@ -4,3 +4,4 @@ RDS_USER: aicore_admin
 RDS_DATABASE: postgres
 RDS_PORT: 5432
 DBAPI: psycopg2
+LOCAL_DB: /Users/siweilu/Desktop/retail-data/newdb

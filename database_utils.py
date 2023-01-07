@@ -22,7 +22,7 @@ class DatabaseConnector():
         eng = self.init_db_engine()
         eng.connect()
         inspector = inspect(eng)
-        return inspector.get_table_names() 
+        return inspector.get_table_names()     
       
 
 if __name__ == "__main__":
