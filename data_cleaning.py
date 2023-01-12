@@ -8,6 +8,10 @@ class DataClean():
         df = df.dropna()
         return df 
 
+    def clean_card_data(self, de = pd.DataFrame()):
+        df = df.dropna()
+        return df    
+
 
 
 

@@ -3,6 +3,7 @@ from database_utils import DatabaseConnector
 import sqlalchemy
 import psycopg2
 import yaml
+import tabula
 
 class DataExtractor():
    
@@ -18,7 +19,11 @@ class DataExtractor():
     engine = sqlalchemy.create_engine(f"{'postgresql'}://{data['LOCAL_USER']}:{data['LOCAL_PASS']}@{data['LOCAL_HOST']}:{data['LOCAL_PORT']}/{data['LOCAL_DB']}")
     df.to_sql(tb_name,engine,if_exists='replace')
     
-    
+ def retrieve_pdf_data(self,link):
+   dfs = tabula.read_pdf(link, stream=True)
+   return dfs 
+
+
 
 
 
