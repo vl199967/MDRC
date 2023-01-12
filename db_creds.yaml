@@ -8,3 +8,4 @@ LOCAL_DB: Sales_data
 LOCAL_USER: postgres
 LOCAL_PASS: vl199967.
 LOCAL_PORT: 5432
+LOCAL_HOST: localhost

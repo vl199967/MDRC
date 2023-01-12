@@ -1,6 +1,7 @@
 import pandas as pd 
 from database_utils import DatabaseConnector
 import sqlalchemy
+import psycopg2
 import yaml
 
 class DataExtractor():
@@ -14,7 +15,7 @@ class DataExtractor():
  def upload_to_db(self,df,tb_name): ##task 3 step 7&8 to be completed 
     with open('db_creds.yaml') as f:
          data = yaml.safe_load(f)
-    engine = sqlalchemy.create_engine(f"{data['RDS_DATABSE']}+{data['DBAPI']}://{data['LOCAL_USER']}:{data['LOCAL_PASS']}@{data['LOCAL_HOST']}:{data['LOCAL_PORT']}/{data['LOCAL_DB']}")
+    engine = sqlalchemy.create_engine(f"{'postgresql'}://{data['LOCAL_USER']}:{data['LOCAL_PASS']}@{data['LOCAL_HOST']}:{data['LOCAL_PORT']}/{data['LOCAL_DB']}")
     df.to_sql(tb_name,engine,if_exists='replace')
     
     
