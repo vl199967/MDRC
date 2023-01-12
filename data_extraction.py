@@ -14,9 +14,8 @@ class DataExtractor():
  def upload_to_db(self,df,tb_name): ##task 3 step 7&8 to be completed 
     with open('db_creds.yaml') as f:
          data = yaml.safe_load(f)
-    local_db = data['LOCAL_DB']
-    new_eng = sqlalchemy.create_engine(local_db)
-    new_eng.connect()
+    engine = sqlalchemy.create_engine(f"{data['RDS_DATABSE']}+{data['DBAPI']}://{data['LOCAL_USER']}:{data['LOCAL_PASS']}@{data['LOCAL_HOST']}:{data['LOCAL_PORT']}/{data['LOCAL_DB']}")
+    df.to_sql(tb_name,engine,if_exists='replace')
     
     
 
@@ -28,6 +27,7 @@ if __name__ == "__main__":
     dum = DataExtractor()
     df = dum.extract_rds_table()
     print(df.head(10))
+    dum.upload_to_db(df,'dim_users')
 
 
     
