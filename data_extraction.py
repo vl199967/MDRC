@@ -31,9 +31,9 @@ class DataExtractor():
 
 if __name__ == "__main__":
     dum = DataExtractor()
-    df = dum.extract_rds_table()
-    print(df.head(10))
-    dum.upload_to_db(df,'dim_users')
+    PDF_PATH = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf'
+    cred_tb = dum.retrieve_pdf_data('card_details.pdf')
+    type(cred_tb)
 
 
     
