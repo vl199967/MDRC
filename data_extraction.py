@@ -20,8 +20,8 @@ class DataExtractor():
     df.to_sql(tb_name,engine,if_exists='replace')
     
  def retrieve_pdf_data(self,link):
-   dfs = tabula.read_pdf(link, stream=True)
-   return dfs 
+   dfs = tabula.read_pdf(link, pages='all', stream=True)
+   return pd.DataFrame(dfs) 
 
 
 
@@ -31,9 +31,8 @@ class DataExtractor():
 
 if __name__ == "__main__":
     dum = DataExtractor()
-    PDF_PATH = 'https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf'
-    cred_tb = dum.retrieve_pdf_data('card_details.pdf')
-    type(cred_tb)
-
+    PDF_PATH = 'card_details.pdf'
+    cred_tb = dum.retrieve_pdf_data(PDF_PATH)
+    dum.upload_to_db(cred_tb,'dim_card_details')
 
     
