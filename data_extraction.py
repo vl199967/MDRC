@@ -4,6 +4,7 @@ import sqlalchemy
 import psycopg2
 import yaml
 import tabula
+import requests
 
 class DataExtractor():
    
@@ -23,6 +24,23 @@ class DataExtractor():
    dfs = tabula.read_pdf(link, pages='all', stream=True)
    return pd.DataFrame(dfs) 
 
+ def list_number_of_stores(self):
+   with open('db_creds.yaml') as f:
+         data = yaml.safe_load(f)
+   header ={"x-api-key": data['X_API_KEY']}      
+   res = requests.get('https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/number_stores',headers = header)
+   res = res.json()
+   return res['number_stores']
+ 
+ def retrieve_stores_data(self):
+   number_stores = self.list_number_of_stores()
+   with open('db_creds.yaml') as f:
+         data = yaml.safe_load(f)
+   header ={"x-api-key": data['X_API_KEY']}
+   res = requests.get('https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}'.format(store_number = number_stores),headers = header)
+   return res.json()       
+   
+
 
 
 
@@ -31,8 +49,11 @@ class DataExtractor():
 
 if __name__ == "__main__":
     dum = DataExtractor()
+    '''
     PDF_PATH = 'card_details.pdf'
     cred_tb = dum.retrieve_pdf_data(PDF_PATH)
     dum.upload_to_db(cred_tb,'dim_card_details')
+    '''
+    print(dum.retrieve_stores_data())
 
     

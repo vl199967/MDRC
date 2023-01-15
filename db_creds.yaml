@@ -10,3 +10,4 @@ LOCAL_PASS: vl199967.
 LOCAL_PORT: 5432
 LOCAL_HOST: localhost
 PDF_PATH: https://data-handling-public.s3.eu-west-1.amazonaws.com/card_details.pdf
+X_API_KEY: yFBQbwXe9J3sd6zWVAMrK6lcxxr0q1lr2PT6DDMX
