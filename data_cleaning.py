@@ -12,6 +12,10 @@ class DataClean():
         df = df.dropna()
         return df    
 
+    def clean_store_data(self, df = pd.DataFrame()):
+        df = df.dropna() 
+        return df   
+
 
 
 

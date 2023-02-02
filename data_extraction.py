@@ -5,6 +5,11 @@ import psycopg2
 import yaml
 import tabula
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+from data_cleaning import DataClean
+
+
 
 class DataExtractor():
    
@@ -33,27 +38,28 @@ class DataExtractor():
    return res['number_stores']
  
  def retrieve_stores_data(self):
+   df = []
    number_stores = self.list_number_of_stores()
    with open('db_creds.yaml') as f:
          data = yaml.safe_load(f)
    header ={"x-api-key": data['X_API_KEY']}
-   res = requests.get('https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}'.format(store_number = number_stores),headers = header)
-   return res.json()       
+   for i in range(number_stores):
+    res = requests.get(' https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}'.format(store_number = i),headers = header)
+    df.append(res.json()) 
+   return pd.DataFrame(df)        
    
 
 
-
-
-
-
-
 if __name__ == "__main__":
+    with open('db_creds.yaml') as f:
+      data = yaml.safe_load(f)
+    cleaner = DataClean()
     dum = DataExtractor()
-    '''
-    PDF_PATH = 'card_details.pdf'
-    cred_tb = dum.retrieve_pdf_data(PDF_PATH)
-    dum.upload_to_db(cred_tb,'dim_card_details')
-    '''
-    print(dum.retrieve_stores_data())
+    df = cleaner.clean_store_data(dum.retrieve_stores_data())
+    dum.upload_to_db(df,tb_name='dim_store_details')
+    
+  
+   
+    
 
     
