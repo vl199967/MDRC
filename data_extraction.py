@@ -1,9 +1,10 @@
 import pandas as pd 
 from database_utils import DatabaseConnector
 import sqlalchemy
+import boto3  
 import psycopg2
 import yaml
-import tabula
+import tabula 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -47,8 +48,11 @@ class DataExtractor():
     res = requests.get(' https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}'.format(store_number = i),headers = header)
     print("currently working on the {i}th item".format(i=i))
     df.append(res.json()) 
-   return pd.DataFrame(df)        
-   
+   return pd.DataFrame(df)      
+
+ def extract_from_s3(self,url):
+   df = requests.get(url)
+   return df 
 
 
 if __name__ == "__main__":
@@ -56,8 +60,8 @@ if __name__ == "__main__":
       data = yaml.safe_load(f)
     cleaner = DataClean()
     dum = DataExtractor()
-    df = dum.retrieve_stores_data()
-    dum.upload_to_db(df,tb_name='dim_store_details')
+    df = dum.extract_from_s3(url='s3://data-handling-public/products.csv')
+    print(df)
     
   
    
