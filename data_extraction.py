@@ -45,6 +45,7 @@ class DataExtractor():
    header ={"x-api-key": data['X_API_KEY']}
    for i in range(number_stores):
     res = requests.get(' https://aqj7u5id95.execute-api.eu-west-1.amazonaws.com/prod/store_details/{store_number}'.format(store_number = i),headers = header)
+    print("currently working on the {i}th item".format(i=i))
     df.append(res.json()) 
    return pd.DataFrame(df)        
    
@@ -55,7 +56,7 @@ if __name__ == "__main__":
       data = yaml.safe_load(f)
     cleaner = DataClean()
     dum = DataExtractor()
-    df = cleaner.clean_store_data(dum.retrieve_stores_data())
+    df = dum.retrieve_stores_data()
     dum.upload_to_db(df,tb_name='dim_store_details')
     
   
