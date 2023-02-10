@@ -50,9 +50,10 @@ class DataExtractor():
     df.append(res.json()) 
    return pd.DataFrame(df)      
 
- def extract_from_s3(self,url):
-   df = requests.get(url)
-   return df 
+ def extract_from_s3(self):
+   s3_client = boto3.client('s3')
+   df = s3_client.download_file('data-handling-public','products.csv','products.csv')
+   return df
 
 
 if __name__ == "__main__":
@@ -60,9 +61,10 @@ if __name__ == "__main__":
       data = yaml.safe_load(f)
     cleaner = DataClean()
     dum = DataExtractor()
-    df = dum.extract_from_s3(url='s3://data-handling-public/products.csv')
-    print(df)
-    
+    dum.extract_from_s3()
+    df = pd.read_csv('products.csv',index_col=0,header=0)
+    dum.upload_to_db(df,'dim_products')
+
   
    
     
