@@ -17,7 +17,7 @@ class DataExtractor():
  def extract_rds_table(self,dbcon = DatabaseConnector()):
     eng = dbcon.init_db_engine()
     user_tb = dbcon.list_db_tables()
-    users = pd.read_sql_table(user_tb[1],eng)
+    users = pd.read_sql_table(user_tb[2],eng)
     return users
 
  def upload_to_db(self,df,tb_name): ##task 3 step 7&8 to be completed 
@@ -61,9 +61,10 @@ if __name__ == "__main__":
       data = yaml.safe_load(f)
     cleaner = DataClean()
     dum = DataExtractor()
-    dum.extract_from_s3()
-    df = pd.read_csv('products.csv',index_col=0,header=0)
-    dum.upload_to_db(df,'dim_products')
+    orders = dum.extract_rds_table()
+    orders.to_csv('orders.csv')
+
+
 
   
    
