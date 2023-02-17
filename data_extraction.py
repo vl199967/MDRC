@@ -61,8 +61,6 @@ if __name__ == "__main__":
       data = yaml.safe_load(f)
     cleaner = DataClean()
     dum = DataExtractor()
-    orders = dum.extract_rds_table()
-    orders.to_csv('orders.csv')
 
 
 
