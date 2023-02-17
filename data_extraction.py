@@ -61,6 +61,9 @@ if __name__ == "__main__":
       data = yaml.safe_load(f)
     cleaner = DataClean()
     dum = DataExtractor()
+    header ={"x-api-key": data['X_API_KEY']}  
+    date_times = requests.get('https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json')
+    dum.upload_to_db(pd.DataFrame(date_times.json()),'dim_date_times')
 
 
 
