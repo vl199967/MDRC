@@ -9,7 +9,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from data_cleaning import DataClean
-
+import re 
 
 
 class DataExtractor():
@@ -17,7 +17,7 @@ class DataExtractor():
  def extract_rds_table(self,dbcon = DatabaseConnector()):
     eng = dbcon.init_db_engine()
     user_tb = dbcon.list_db_tables()
-    users = pd.read_sql_table(user_tb[2],eng)
+    users = pd.read_sql_table(user_tb[1],eng)
     return users
 
  def upload_to_db(self,df,tb_name): ##task 3 step 7&8 to be completed 
@@ -62,8 +62,14 @@ if __name__ == "__main__":
     cleaner = DataClean()
     dum = DataExtractor()
     header ={"x-api-key": data['X_API_KEY']}  
-    date_times = requests.get('https://data-handling-public.s3.eu-west-1.amazonaws.com/date_details.json')
-    dum.upload_to_db(pd.DataFrame(date_times.json()),'dim_date_times')
+
+
+    df = pd.read_csv('processed_users (1).csv')
+    df = df.dropna(axis=0,how='any')
+    regex = re.compile('^[A-Z0-9]{10}$')
+    rm = df[~df['first_name'].str.contains(regex)]
+    dum.upload_to_db(rm,'dim_users')
+    
 
 
 
