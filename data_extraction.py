@@ -10,7 +10,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from data_cleaning import DataClean
 import re 
-
+import string as st
+import numpy as np
 
 class DataExtractor():
    
@@ -63,16 +64,58 @@ if __name__ == "__main__":
     dum = DataExtractor()
     header ={"x-api-key": data['X_API_KEY']}  
 
-
+    '''
     df = pd.read_csv('processed_users (1).csv')
     df = df.dropna(axis=0,how='any')
     regex = re.compile('^[A-Z0-9]{10}$')
     rm = df[~df['first_name'].str.contains(regex)]
     dum.upload_to_db(rm,'dim_users')
+    '''
+    '''
+    df = pd.read_csv('dim_store_details.csv')
+    df = df.drop(labels=[63,172,231,333,381,414,447],axis=0)
+    dum.upload_to_db(df,'dim_store_details')
+    '''
+
+    df = pd.read_csv('products.csv')
+    df = df.dropna(axis=0,how='any')
+    df = df.drop(labels=[751,1133,1400],axis=0)
+    df['product_price'] = df['product_price'].str.lstrip('£')
+
     
 
+    
+    wgt = [x for x in df['weight']]
+    processed = [float(str(x).rstrip('kg')) if re.search('kg$',str(x)) 
+                                            else float(str(x).partition('ml')[0])/1000
+                                            if re.search('ml',str(x))
+                                            else float(str(x).partition('x')[0])*float(str(x).partition('x')[2].rstrip('g'))/1000
+                                            if re.search('x',str(x))
+                                            else float(str(x).rstrip('oz')) * 0.0283
+                                            if re.search('oz',str(x))
+                                            else float(str(x).rstrip('g .'))/1000 
+                                            for x in wgt ]    
+
+    df['weight_class'] = [ 'Light' if x <= 2
+                                   else 'Mid_Sized' if x >2 and x<= 40 
+                                   else 'Heavy' if x>40 and x<=140
+                                   else 'Truck_Required'
+                            for x in processed]
+    df['weight'] = processed 
+    dum.upload_to_db(df,'dim_products')                     
+                                                       
 
 
+
+
+  
+
+
+
+
+
+
+    
   
    
     
