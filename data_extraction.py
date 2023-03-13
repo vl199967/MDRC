@@ -28,7 +28,7 @@ class DataExtractor():
     df.to_sql(tb_name,engine,if_exists='replace')
     
  def retrieve_pdf_data(self,link):
-   dfs = tabula.read_pdf(link, pages='all', stream=True)
+   dfs = tabula.read_pdf(link, pages='all')
    return pd.DataFrame(dfs) 
 
  def list_number_of_stores(self):
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     df = df.drop(labels=[63,172,231,333,381,414,447],axis=0)
     dum.upload_to_db(df,'dim_store_details')
     '''
-
+    '''
     df = pd.read_csv('products.csv')
     df = df.dropna(axis=0,how='any')
     df = df.drop(labels=[751,1133,1400],axis=0)
@@ -102,8 +102,30 @@ if __name__ == "__main__":
                                    else 'Truck_Required'
                             for x in processed]
     df['weight'] = processed 
-    dum.upload_to_db(df,'dim_products')                     
-                                                       
+    dum.upload_to_db(df,'dim_products')          
+    
+    
+    dfs = tabula.read_pdf('card_details.pdf',columns=(53.76,68.63,50.46,546.16),area=(66.86,50.54,784.47,544.72), pages='all')
+    df = pd.DataFrame(dfs)
+    df.to_csv('cards.csv')
+    '''
+   
+    df = pd.read_csv('dates.csv')
+    df = df.dropna(axis=0,how='any')
+    regex = re.compile('^[A-Z0-9]{10}$')
+    rm = df[~df['timestamp'].str.contains(regex)]
+    rm.to_csv('test.csv')
+    dum.upload_to_db(rm,'dim_date_details')
+
+
+
+
+    
+    
+
+
+
+
 
 
 
